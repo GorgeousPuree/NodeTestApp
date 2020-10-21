@@ -2,6 +2,7 @@ const { db } = require(".");
 const { Op } = require(".").db.Sequelize;
 
 const Category = db.categories;
+const Product = db.products;
 
 exports.create = async (model) => {
   const category = {
@@ -26,7 +27,11 @@ exports.create = async (model) => {
 
 exports.findAll = async () => {
   try {
-    const categories = await Category.findAll();
+    const categories = await Category.findAll({
+      attributes: {
+        exclude: ["updatedAt", "createdAt"],
+      },
+    });
     return { succeeded: true, model: categories };
   } catch {
     return { succeeded: false, message: "Error occurred while retrieving categories." };
@@ -35,7 +40,11 @@ exports.findAll = async () => {
 
 exports.findOne = async (id) => {
   try {
-    const category = await Category.findByPk(id);
+    const category = await Category.findByPk(id, {
+      attributes: {
+        exclude: ["updatedAt", "createdAt"],
+      },
+    });
     if (!category) return { succeeded: true, message: `Category with id=${id} was not found.` };
     return { succeeded: true, model: category };
   } catch {
@@ -68,6 +77,9 @@ exports.update = async (id, model) => {
 
 exports.delete = async (id) => {
   try {
+    const foundProduct = await Product.findOne({ where: { category_id: id } });
+    if (foundProduct) return { succeeded: true, message: `Category with id=${id} cannot be deleted. It is in use.` };
+
     const result = await Category.destroy({
       where: { id },
     });
