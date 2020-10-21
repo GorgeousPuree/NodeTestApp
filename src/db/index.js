@@ -25,6 +25,18 @@ db.categories = require("../models/category.model")(sequelize, Sequelize);
 db.vendors = require("../models/vendor.model")(sequelize, Sequelize);
 db.products = require("../models/product.model")(sequelize, Sequelize);
 
+// Though I've set allowNull: false and onDelete: 'CASCADE',
+// I usually provide an additional column is_active,
+// which becomes false if user wants to delete a record.
+// Following this approach it is impossible to delete any record in database,
+// but only switch is_active column. It depends on needs.
+// But in this case I've simply left it with onDelete: 'CASCADE'.
+db.vendors.hasMany(db.products, { foreignKey: { allowNull: false, name: "vendor_id" }, onDelete: "CASCADE" });
+db.products.belongsTo(db.vendors, { foreignKey: { allowNull: false, name: "vendor_id" }, onDelete: "CASCADE" });
+
+db.categories.hasMany(db.products, { foreignKey: { allowNull: false, name: "category_id" }, onDelete: "CASCADE" });
+db.products.belongsTo(db.categories, { foreignKey: { allowNull: false, name: "category_id" }, onDelete: "CASCADE" });
+
 exports.initializeDb = async () => {
   const client = new Client({
     host: process.env.host,

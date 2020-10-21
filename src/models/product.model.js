@@ -8,22 +8,6 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.DECIMAL,
       allowNull: false,
     },
-    category_id: {
-      type: Sequelize.INTEGER,
-      references: {
-        model: "categories",
-        key: "id",
-      },
-      allowNull: false,
-    },
-    vendor_id: {
-      type: Sequelize.INTEGER,
-      references: {
-        model: "vendors",
-        key: "id",
-      },
-      allowNull: false,
-    },
     expiration_date: {
       type: Sequelize.DATEONLY,
       allowNull: false,
@@ -31,6 +15,9 @@ module.exports = (sequelize, Sequelize) => {
     unit: {
       type: Sequelize.STRING,
       allowNull: false,
+      validate: {
+        isIn: [["kg", "g", "pieces"]],
+      },
     },
     quantity: {
       type: Sequelize.INTEGER,
@@ -39,6 +26,8 @@ module.exports = (sequelize, Sequelize) => {
     additional: {
       type: Sequelize.STRING,
     },
+  }, {
+    underscored: true,
   });
 
   return Product;
