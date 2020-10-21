@@ -1,7 +1,7 @@
 const { Client } = require("pg");
 
 const Sequelize = require("sequelize");
-const { pgConfig } = require("../config/db.config.js");
+const { pgConfig } = require("../config/config.js");
 
 const sequelize = new Sequelize(process.env.database, process.env.user, process.env.password, {
   host: process.env.host,

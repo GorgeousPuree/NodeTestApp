@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 exports.pgConfig = {
   dialect: "postgres",
   pool: {
